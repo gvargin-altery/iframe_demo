@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Iframe Test — Altery</title>
+  <title>Iframe Test</title>
 </head>
 <body style="font-family: Arial; padding: 20px;">
 
@@ -10,11 +10,10 @@
 
   <div style="margin-bottom: 10px;">
     <label>Session Token:</label><br />
-    <input id="token" type="password" autocomplete="off" style="width: min(400px, 90vw);" placeholder="Вставьте session token" />
+    <input id="token" style="width: 400px;" />
   </div>
 
-  <button id="send-token" type="button">Отправить токен</button>
-  <p id="status" role="status" aria-live="polite">Ожидание токена. Сообщения iframe отображаются в консоли браузера.</p>
+  <button onclick="sendToken()">Send Token</button>
 
   <hr />
 
@@ -23,8 +22,7 @@
     src="https://api.altery.com/v1/corporate-cards/iframe/97dff5a3-9bab-45fd-909d-5cf9abd68a46"
     width="800"
     height="600"
-    title="Altery corporate cards"
-    style="width: min(800px, 100%); height: 600px; border: 1px solid #ccc;"
+    style="border:1px solid #ccc;"
   ></iframe>
 
   <script>
@@ -32,30 +30,18 @@
       const iframe = document.getElementById("iframe");
       const token = document.getElementById("token").value;
 
-      if (!token.trim()) {
-        document.getElementById("status").textContent = "Сначала вставьте session token.";
-        return;
-      }
-
-      const targetOrigin = new URL(iframe.src).origin;
-
       iframe.contentWindow.postMessage(
         {
           type: "SET_SESSION_TOKEN",
           sessionToken: token
         },
-        targetOrigin
+        "https://api.altery.com"
       );
 
-      document.getElementById("status").textContent = `Токен отправлен на ${targetOrigin}.`;
-      console.log("Session token sent to:", targetOrigin);
+      console.log("Token sent");
     }
 
-    document.getElementById("send-token").addEventListener("click", sendToken);
-
     window.addEventListener("message", (event) => {
-      const iframe = document.getElementById("iframe");
-      if (event.source !== iframe.contentWindow) return;
       console.log("Message from iframe:", event.origin, event.data);
     });
   </script>
